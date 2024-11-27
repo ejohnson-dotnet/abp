@@ -12,12 +12,12 @@ namespace Volo.CmsKit.Public.Web.Pages;
 public class CmsKitPageRouteValueTransformer : DynamicRouteValueTransformer, ITransientDependency
 {
     protected IFeatureChecker FeatureChecker { get; }
-    protected IPagePublicAppService PagePublicAppService { get; }
+    protected CmsKitRemotePageStore RemotePageStore { get; }
 
-    public CmsKitPageRouteValueTransformer(IFeatureChecker featureChecker, IPagePublicAppService pagePublicAppService)
+    public CmsKitPageRouteValueTransformer(IFeatureChecker featureChecker, CmsKitRemotePageStore remotePageStore)
     {
         FeatureChecker = featureChecker;
-        PagePublicAppService = pagePublicAppService;
+        RemotePageStore = remotePageStore;
     }
 
     public override async ValueTask<RouteValueDictionary> TransformAsync(HttpContext httpContext, RouteValueDictionary values)
@@ -30,7 +30,7 @@ public class CmsKitPageRouteValueTransformer : DynamicRouteValueTransformer, ITr
             }
 
             var slug = slugParameter.ToString().TrimStart('/');
-            var exist = await PagePublicAppService.DoesSlugExistAsync(slug);
+            var exist = await RemotePageStore.DoesSlugExistAsync(slug);
 
             if (exist)
             {

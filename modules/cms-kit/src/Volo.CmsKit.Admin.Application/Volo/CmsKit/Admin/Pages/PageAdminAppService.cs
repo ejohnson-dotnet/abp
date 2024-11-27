@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Caching.Distributed;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Caching;
 using Volo.Abp.Data;
@@ -29,16 +30,20 @@ public class PageAdminAppService : CmsKitAdminAppServiceBase, IPageAdminAppServi
     
     protected IDistributedCache<PageCacheItem> PageCache { get; }
 
+    protected IDistributedCache DistributedCache { get; }
+
     public PageAdminAppService(
         IPageRepository pageRepository,
         PageManager pageManager, 
         IDistributedCache<PageCacheItem> pageCache, 
-        ICommentRepository commentRepository)
+        ICommentRepository commentRepository,
+        IDistributedCache distributedCache)
     {
         PageRepository = pageRepository;
         PageManager = pageManager;
         PageCache = pageCache;
         CommentRepository = commentRepository;
+        DistributedCache = distributedCache;
     }
 
     public virtual async Task<PageDto> GetAsync(Guid id)
@@ -128,5 +133,7 @@ public class PageAdminAppService : CmsKitAdminAppServiceBase, IPageAdminAppServi
     protected virtual async Task InvalidateDefaultHomePageCacheAsync(bool considerUow = false)
     {
         await PageCache.RemoveAsync(PageCacheItem.GetKey(PageConsts.DefaultHomePageCacheKey), considerUow: considerUow);
+
+        await DistributedCache.RemoveAsync(CmsKitPublicPagesCache.CacheKey);
     }
 }
