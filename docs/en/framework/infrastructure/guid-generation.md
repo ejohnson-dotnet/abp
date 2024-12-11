@@ -24,6 +24,8 @@ So, **never use `Guid.NewGuid()` to create Ids** for your entities!
 
 One good solution to this problem is to generate **sequential GUIDs**, which is provided by the ABP out of the box. `IGuidGenerator` service creates sequential GUIDs (implemented by the `SequentialGuidGenerator` by default). Use `IGuidGenerator.Create()` when you need to manually set Id of an [entity](../architecture/domain-driven-design/entities.md).
 
+Additionally, the `IGuidGenerator` interface includes a `Create(SequentialGuidType guidType)` method that allows specifying the type of sequential GUID to generate. See the [AbpSequentialGuidGeneratorOptions](#AbpSequentialGuidGeneratorOptions) section for more information about the `SequentialGuidType`.
+
 **Example: An entity with GUID primary key and creating the entity**
 
 Assume that you've a `Product` [entity](../architecture/domain-driven-design/entities.md) that has a `Guid` key:

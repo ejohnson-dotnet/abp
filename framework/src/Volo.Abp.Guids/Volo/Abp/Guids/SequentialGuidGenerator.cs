@@ -15,19 +15,19 @@ public class SequentialGuidGenerator : IGuidGenerator, ITransientDependency
 {
     public AbpSequentialGuidGeneratorOptions Options { get; }
 
-    private static readonly RandomNumberGenerator RandomNumberGenerator = RandomNumberGenerator.Create();
+    private readonly static RandomNumberGenerator RandomNumberGenerator = RandomNumberGenerator.Create();
 
     public SequentialGuidGenerator(IOptions<AbpSequentialGuidGeneratorOptions> options)
     {
         Options = options.Value;
     }
 
-    public Guid Create()
+    public virtual Guid Create()
     {
         return Create(Options.GetDefaultSequentialGuidType());
     }
 
-    public Guid Create(SequentialGuidType guidType)
+    public virtual Guid Create(SequentialGuidType guidType)
     {
         // We start with 16 bytes of cryptographically strong random data.
         var randomBytes = new byte[10];
