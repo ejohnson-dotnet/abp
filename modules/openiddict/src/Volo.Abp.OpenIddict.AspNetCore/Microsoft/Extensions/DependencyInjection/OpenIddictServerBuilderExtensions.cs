@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
@@ -10,6 +11,11 @@ public static class OpenIddictServerBuilderExtensions
         if (!File.Exists(fileName))
         {
             throw new FileNotFoundException($"Signing Certificate couldn't found: {fileName}");
+        }
+
+        if (flag == null && OperatingSystem.IsWindows() && NativeMethods.IsAspNetCoreModuleLoaded())
+        {
+            flag = X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.EphemeralKeySet;
         }
 
         var certificate = flag != null
